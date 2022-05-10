@@ -5,7 +5,7 @@ import sys
 
 class Help():
     def about(root):
-        showinfo(title="About", message="Hello! This is a Text Editor made by NIghtmare with Python.")
+        showinfo(title="About", message="AutoComplete editor by Adrian Satja Kurdija")
 
 
 def main(root, text, menubar):

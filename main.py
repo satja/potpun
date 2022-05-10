@@ -1,35 +1,40 @@
 from tkinter import *
+from tkinter.font import *
 from tkinter.filedialog import *
 from tkinter.messagebox import *
-from tkinter.font import Font
 from tkinter.scrolledtext import *
 import file_menu
 import edit_menu
 import format_menu
 import help_menu
+import suggest
+
+DICTIONARY = 'dictionaries/words.txt'
+TEXT_WIDTH = 50
+TEXT_FONT = ('Times New Roman', 15)
+LABEL_WIDTH = 2
+SUGGESTION_WIDTH = 15
+LABEL_FONT = 'Courier 20'
 
 root = Tk()
-
-root.title("TextEditor-newfile")
-root.geometry("300x250+300+300")
+root.option_add("*font", "lucida 12")
+root.title("Upotpuni me")
+#root.geometry("300x250+300+300")
 root.minsize(width=400, height=400)
 
-text = ScrolledText(root, state='normal', height=400, width=400, wrap='word', pady=2, padx=3, undo=True)
-text.grid(row=0, column=0, rowspan=10, sticky='nsew')
-#text.pack(fill=Y, expand=1)
+text = ScrolledText(root, width=TEXT_WIDTH, state='normal', wrap='word', undo=True)
 text.focus_set()
 
-Label(root, text="0:").grid(row=0, column=1, sticky='nsew')
-Label(root, text="1:").grid(row=1, column=1, sticky='nsew')
-Label(root, text="2:").grid(row=2, column=1, sticky='nsew')
-Label(root, text="3:").grid(row=3, column=1, sticky='nsew')
-Label(root, text="3:").grid(row=4, column=1)
-Label(root, text="4:").grid(row=5, column=1)
-Label(root, text="5:").grid(row=6, column=1)
-Label(root, text="7:").grid(row=7, column=1)
-Label(root, text="6:").grid(row=8, column=1)
-Label(root, text="8:").grid(row=9, column=1)
-Label(root, text="9:").grid(row=10, column=1)
+nums = [Label(root, font=LABEL_FONT + ' bold', text=f"{i}", width=LABEL_WIDTH)\
+        for i in range(10)]
+for i, num in enumerate(nums):
+    num.grid(row=i, column=1)
+
+labels = [Label(root, text="", font=LABEL_FONT, width=SUGGESTION_WIDTH) for i in range(10)]
+for i, l in enumerate(labels):
+    l.grid(row=i, column=2)
+
+text.grid(row=0, column=0, rowspan=10)
 
 menubar = Menu(root)
 
@@ -37,4 +42,58 @@ file_menu.main(root, text, menubar)
 edit_menu.main(root, text, menubar)
 format_menu.main(root, text, menubar)
 help_menu.main(root, text, menubar)
+
+ai = suggest.AutoComplete(DICTIONARY)
+completions = []
+
+resetting_modified_flag = False
+autocompleted = False
+
+def on_change(event):
+    global resetting_modified_flag
+    global autocompleted
+
+    if resetting_modified_flag: return
+    resetting_modified_flag = True
+    try:
+        text.tk.call(text._w, 'edit', 'modified', 0)
+    finally:
+        resetting_modified_flag = False
+
+    if autocompleted:
+        autocompleted = False
+        return
+
+    word = text.get("insert -1c wordstart", "insert").strip()
+    suggestions = ai.suggest(word)
+    completions.clear()
+    for i in range(10):
+        nums[i].config(bg='#f0f0f0')
+        if i < len(suggestions):
+            completion = suggestions[i][len(word):]
+            labels[i].config(text=f'{word}{completion}')
+            completions.append(completion)
+        else:
+            labels[i].config(text='')
+
+def handle_input(event):
+    global autocompleted
+    if not event.char:
+        return
+    if event.char in '0123456789':
+        digit = int(event.char)
+        if digit < len(completions):
+            autocompleted = True
+            text.insert(INSERT, completions[digit])
+            for i in range(len(completions)):
+                if i != digit:
+                    labels[i].config(text='')
+            nums[digit].config(bg='yellow')
+            completions.clear()
+        return 'break'
+
+text.bind("<Key>", handle_input)
+text.bind("<<Modified>>", on_change)
+
+text.configure(font=TEXT_FONT)
 root.mainloop()
