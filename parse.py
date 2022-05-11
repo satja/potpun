@@ -11,6 +11,6 @@ with open('hrLex_v1.3') as f:
         frek = float(niz[-1])
         freqs[rijec] += frek
 for rijec, frek in sorted(freqs.items(), key=lambda par: -par[1]):
-    if frek <= 1e-4:
+    if frek <= 1e-5:
         break
     print(rijec, "{:.6f}".format(frek))
