@@ -9,7 +9,7 @@ import format_menu
 import help_menu
 import suggest
 
-DICTIONARY = 'dictionaries/words.txt'
+DICTIONARY = 'dictionaries/croatian.txt'
 TEXT_WIDTH = 50
 TEXT_FONT = ('Times New Roman', 15)
 LABEL_WIDTH = 2
