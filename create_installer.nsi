@@ -1,8 +1,8 @@
-!define APP_NAME "UpotpuniMe"
+!define APP_NAME "Nadopunitelj"
 Name "${APP_NAME}"
 
 # define the name of the installer
-Outfile "upotpuni_me_installer.exe"
+Outfile "potpun_installer.exe"
  
 # define the directory to install to, the desktop in this case as specified  
 # by the predefined $DESKTOP variable
@@ -48,7 +48,7 @@ Section
 	Quit:
 	  Quit
     UninstallExisting:
-        StrCpy $1 "upotpunime.exe"
+        StrCpy $1 "potpun.exe"
 
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
         DeleteRegKey HKLM SOFTWARE\${APP_NAME}
@@ -65,8 +65,8 @@ Section
     #AccessControl::GrantOnFile "$INSTDIR\run" "(BU)" "FullAccess"
 
     SetOutPath "$INSTDIR\run"
-    CreateShortcut "$SMPROGRAMS\${APP_NAME}.lnk" "$INSTDIR\run\upotpunime.exe" "" "$INSTDIR\run\logo4.ico"
-    CreateShortcut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\run\upotpunime.exe" "" "$INSTDIR\run\logo4.ico"
+    CreateShortcut "$SMPROGRAMS\${APP_NAME}.lnk" "$INSTDIR\run\potpun.exe" "" "$INSTDIR\run\logo4.ico"
+    CreateShortcut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\run\potpun.exe" "" "$INSTDIR\run\logo4.ico"
 
     WriteUninstaller "$INSTDIR\uninstall.exe"
     CreateShortCut "$SMPROGRAMS\Uninstall ${APP_NAME}.lnk" "$INSTDIR\uninstall.exe"
@@ -77,7 +77,7 @@ Section
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" "NoRepair" 1
 
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "${APP_NAME}" '"$INSTDIR\run\upotpunime.exe"'
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "${APP_NAME}" '"$INSTDIR\run\potpun.exe"'
 SectionEnd
 
 function un.onInit
@@ -89,7 +89,7 @@ functionEnd
 !include "LogicLib.nsh"
 Section Uninstall
 
-    StrCpy $1 "upotpunime.exe"
+    StrCpy $1 "potpun.exe"
 
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
     DeleteRegKey HKLM SOFTWARE\${APP_NAME}

@@ -10,20 +10,28 @@ class Edit():
 
     def copy(self, *args):
         sel = self.text.selection_get()
-        self.clipboard = sel
+        self.root.clipboard_clear()
+        self.root.clipboard_append(sel)
+        self.root.update()
 
     def cut(self, *args):
         sel = self.text.selection_get()
-        self.clipboard = sel
         self.text.delete(SEL_FIRST, SEL_LAST)
+        self.root.clipboard_clear()
+        self.root.clipboard_append(sel)
+        self.root.update()
 
     def paste(self, *args):
-        self.text.insert(INSERT, self.clipboard)
+        self.text.insert(INSERT, self.root.clipboard_get())
 
     def selectAll(self, *args):
         self.text.tag_add(SEL, "1.0", END)
         self.text.mark_set(0.0, END)
         self.text.see(INSERT)
+
+    def copyAll(self, *args):
+        self.selectAll()
+        self.copy()
 
     def undo(self, *args):
         self.text.edit_undo()
@@ -46,8 +54,8 @@ class Edit():
             self.text.tag_config('found', foreground='white', background='blue')
 
     def __init__(self, text, root):
-        self.clipboard = None
         self.text = text
+        self.root = root
         self.rightClick = Menu(root)
 
 
@@ -64,12 +72,13 @@ def main(root, text, menubar):
     editmenu.add_command(label="Find", command=objEdit.find, accelerator="Ctrl+F")
     editmenu.add_separator()
     editmenu.add_command(label="Select All", command=objEdit.selectAll, accelerator="Ctrl+A")
+    editmenu.add_command(label="Copy All", command=objEdit.copyAll)
     menubar.add_cascade(label="Edit", menu=editmenu)
 
     root.bind_all("<Control-z>", objEdit.undo)
     root.bind_all("<Control-y>", objEdit.redo)
     root.bind_all("<Control-f>", objEdit.find)
-    root.bind_all("Control-a", objEdit.selectAll)
+    root.bind_all("<Control-a>", objEdit.selectAll)
 
     objEdit.rightClick.add_command(label="Copy", command=objEdit.copy)
     objEdit.rightClick.add_command(label="Cut", command=objEdit.cut)

@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter.font import *
 from tkinter.filedialog import *
 from tkinter.messagebox import *
 from tkinter.scrolledtext import *
@@ -7,20 +6,36 @@ import file_menu
 import edit_menu
 import format_menu
 import help_menu
+import language_menu
 import suggest
+import configparser
 
 DICTIONARY = 'dictionaries/croatian.txt'
-TEXT_WIDTH = 50
-TEXT_FONT = ('Times New Roman', 15)
+TITLE = 'Nadopunitelj'
+TEXT_WIDTH = 100
 LABEL_WIDTH = 2
 SUGGESTION_WIDTH = 15
 LABEL_FONT = 'Courier 20'
+DEFAULT_FONT = "Times New Roman"
+DEFAULT_SIZE = 15
 
 root = Tk()
 root.option_add("*font", "lucida 12")
-root.title("Upotpuni me")
-#root.geometry("300x250+300+300")
-root.minsize(width=400, height=400)
+root.title(TITLE + ' - Untitled')
+root.geometry("{}x{}".format(300, root.winfo_height()))
+root.minsize(width=600, height=600)
+
+config = configparser.ConfigParser()
+config.read('potpun.ini')
+default_config = {
+    'FontFamily': DEFAULT_FONT,
+    'FontSize': str(DEFAULT_SIZE),
+    'Background': 'white',
+    'FontColor': 'black',
+    'Language': 'croatian',
+    }
+if 'USER' not in config:
+    config['USER'] = default_config
 
 text = ScrolledText(root, width=TEXT_WIDTH, state='normal', wrap='word', undo=True)
 text.focus_set()
@@ -36,16 +51,17 @@ for i, l in enumerate(labels):
 
 text.grid(row=0, column=0, rowspan=10)
 
-menubar = Menu(root)
+ai = suggest.AutoComplete(config['USER'])
 
+menubar = Menu(root)
 file_menu.main(root, text, menubar)
+var = StringVar(None, config['USER']['Language'])
+language_menu.main(root, text, menubar, config['USER'], ai, var)
 edit_menu.main(root, text, menubar)
-format_menu.main(root, text, menubar)
+format_menu.main(root, text, menubar, config['USER'], default_config)
 help_menu.main(root, text, menubar)
 
-ai = suggest.AutoComplete(DICTIONARY)
 completions = []
-
 resetting_modified_flag = False
 autocompleted = False
 
@@ -53,12 +69,15 @@ def on_change(event):
     global resetting_modified_flag
     global autocompleted
 
-    if resetting_modified_flag: return
-    resetting_modified_flag = True
-    try:
-        text.tk.call(text._w, 'edit', 'modified', 0)
-    finally:
+    title = root.title()
+    if title[0] != '*':
+        root.title('*' + title)
+    if resetting_modified_flag:
         resetting_modified_flag = False
+        return
+
+    resetting_modified_flag = True
+    text.tk.call(text._w, 'edit', 'modified', 0)
 
     if autocompleted:
         autocompleted = False
@@ -92,8 +111,21 @@ def handle_input(event):
             completions.clear()
         return 'break'
 
+def configure(event):
+    root.geometry("{}x{}".format(root.winfo_width(), event.height))
+
+def on_closing():
+    entry = askyesno(title="Quit", message="Are you sure you want to quit?")
+    if entry == True:
+        with open('potpun.ini', 'w') as f:
+            config.write(f)
+        root.destroy()
+
 text.bind("<Key>", handle_input)
 text.bind("<<Modified>>", on_change)
+text.bind("<Configure>", configure)
 
-text.configure(font=TEXT_FONT)
+root.protocol("WM_DELETE_WINDOW", on_closing)
+
+root.after(200, ai.load)
 root.mainloop()
