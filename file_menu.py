@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.filedialog import *
 from tkinter.messagebox import *
+import traceback
 import sys
 from os.path import basename
 
@@ -16,24 +17,21 @@ class File():
         self.text.delete(0.0, END)
 
     def saveFile(self, *args):
+        if not self.filename:
+            return self.saveAs()
+        t = self.text.get(0.0, END)
         try:
-            t = self.text.get(0.0, END)
-            f = open(self.filename, 'w')
-            f.write(t)
-            f.close()
+            with open(self.filename, 'w', encoding='utf-8') as f:
+                f.write(t)
             self.root.title(f"{TITLE} - {basename(self.filename)}")
-        except:
-            self.saveAs()
+        except Exception as e:
+            traceback.print_exc()
+            showerror(title="Oops!", message="Unable to save file...\n\n" + e)
 
     def saveAs(self):
         f = asksaveasfile(mode='w', defaultextension='.txt')
-        t = self.text.get(0.0, END)
-        try:
-            f.write(t.rstrip())
-            self.filename = f.name
-            self.root.title(f"{TITLE} - {basename(self.filename)}")
-        except:
-            showerror(title="Oops!", message="Unable to save file...")
+        self.filename = f.name
+        self.saveFile()
 
     def openFile(self, *args):
         f = askopenfile(mode='r')
