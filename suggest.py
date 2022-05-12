@@ -1,18 +1,18 @@
 from collections import defaultdict
 import tkinter as tk
+import pickle
 
 class AutoComplete:
     def __init__(self, config):
         self.language = config['Language']
 
     def _load(self):
-        words_file = f'dictionaries/{self.language}.txt'
+        words_file = f'dictionaries/{self.language}.dat'
         self.suggestions = defaultdict(list)
         self.words = []
         word_set = set()
-        with open(words_file) as f:
-            for line in f:
-                word, freq = line.split()
+        with open(words_file, 'rb') as f:
+            for word in pickle.load(f):
                 n = len(word)
                 if n <= 2:
                     continue
