@@ -30,16 +30,24 @@ class File():
 
     def saveAs(self):
         f = asksaveasfile(mode='w', defaultextension='.txt')
-        self.filename = f.name
-        self.saveFile()
+        if hasattr(f, 'name'):
+            self.filename = f.name
+            self.saveFile()
 
     def openFile(self, *args):
         f = askopenfile(mode='r')
+        if not hasattr(f, 'name'):
+            return
         self.filename = f.name
-        self.root.title(f"{TITLE} - {basename(self.filename)}")
-        t = f.read()
-        self.text.delete(0.0, END)
-        self.text.insert(0.0, t)
+        try:
+            with open(self.filename, 'r', encoding='utf-8') as f:
+                t = f.read()
+            self.root.title(f"{TITLE} - {basename(self.filename)}")
+            self.text.delete(0.0, END)
+            self.text.insert(0.0, t)
+        except Exception as e:    
+            traceback.print_exc()
+            showerror(title="Oops!", message="Unable to open file...\n\n" + e)
 
     def quit(self):
         entry = askyesno(title="Quit", message="Are you sure you want to quit?")

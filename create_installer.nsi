@@ -1,4 +1,8 @@
 !define APP_NAME "Nadopunitelj"
+!define MUI_ICON logo.ico
+!define APP_ICON logo.ico
+!define MAIN_APP_ICO "logo.ico"
+
 Name "${APP_NAME}"
 
 # define the name of the installer
@@ -11,7 +15,7 @@ InstallDirRegKey HKLM "Software\${APP_NAME}" "Install_Dir"
 
 !include "MUI2.nsh"
 !define MUI_PAGE_CUSTOMFUNCTION_SHOW DirectoryShow
-!insertmacro MUI_LANGUAGE "Croatian"
+!insertmacro MUI_LANGUAGE "English"
 
 Function DirectoryShow
     GetDlgItem $R0 $HWNDPARENT 1037
@@ -62,11 +66,11 @@ Section
     # define what to install and place it in the output path
     File /r dist\run
 
-    #AccessControl::GrantOnFile "$INSTDIR\run" "(BU)" "FullAccess"
+    AccessControl::GrantOnFile "$INSTDIR\run" "(BU)" "FullAccess"
 
     SetOutPath "$INSTDIR\run"
-    CreateShortcut "$SMPROGRAMS\${APP_NAME}.lnk" "$INSTDIR\run\potpun.exe" "" "$INSTDIR\run\logo4.ico"
-    CreateShortcut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\run\potpun.exe" "" "$INSTDIR\run\logo4.ico"
+    CreateShortcut "$SMPROGRAMS\${APP_NAME}.lnk" "$INSTDIR\run\potpun.exe" "" "$INSTDIR\run\logo.ico"
+    CreateShortcut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\run\potpun.exe" "" "$INSTDIR\run\logo.ico"
 
     WriteUninstaller "$INSTDIR\uninstall.exe"
     CreateShortCut "$SMPROGRAMS\Uninstall ${APP_NAME}.lnk" "$INSTDIR\uninstall.exe"
@@ -77,7 +81,6 @@ Section
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}" "NoRepair" 1
 
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Run" "${APP_NAME}" '"$INSTDIR\run\potpun.exe"'
 SectionEnd
 
 function un.onInit
