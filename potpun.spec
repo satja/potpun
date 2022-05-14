@@ -4,7 +4,9 @@ block_cipher = None
 
 a = Analysis(['main.py'],
              binaries=[],
-             datas=[ ('dictionaries', 'dictionaries'), ],
+             datas=[('dictionaries', 'dictionaries'),
+                    ('logo.ico', '.')
+             ],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
