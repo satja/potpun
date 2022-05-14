@@ -2,13 +2,15 @@ from tkinter import *
 from tkinter.filedialog import *
 from tkinter.messagebox import *
 from tkinter.scrolledtext import *
+import configparser
+import sys
+
 import file_menu
 import edit_menu
 import format_menu
 import help_menu
 import language_menu
 import suggest
-import configparser
 
 DICTIONARY = 'dictionaries/croatian.txt'
 TITLE = 'Nadopunitelj'
@@ -20,6 +22,7 @@ DEFAULT_FONT = "Times New Roman"
 DEFAULT_SIZE = 15
 
 root = Tk()
+root.tk.call('encoding', 'system', 'utf-8')
 root.option_add("*font", "lucida 12")
 root.title(TITLE + ' - Untitled')
 root.geometry("{}x{}".format(300, root.winfo_height()))
