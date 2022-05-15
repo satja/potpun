@@ -102,6 +102,23 @@ def handle_input(event):
     global autocompleted
     if not event.char:
         return
+    if event.keysym == '??':
+        char = None
+        if event.keycode == 219:
+            char = u"\u0161"
+        if event.keycode == 221:
+            char = u"\u0111"
+        if event.keycode == 186:
+            char = u"\u010D"
+        if event.keycode == 222:
+            char = u"\u0107"
+        if event.keycode == 220:
+            char = u"\u017e"
+        if char:
+            if event.state > 8:
+                char = char.upper()
+            text.insert(INSERT, char)
+            return 'break'
     if event.char in '0123456789':
         digit = int(event.char)
         if digit < len(completions):
