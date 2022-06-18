@@ -95,9 +95,12 @@ def on_change(event):
         return
 
     word = text.get("insert -1c wordstart", "insert").strip()
-    if word == '.' or word == '?' or word == '!':
-        capitalize = True
+    if word == '.' or word == '?' or word == '!' or word == ',':
+        text.insert(INSERT, ' ')
+        if word != ',':
+            capitalize = True
         return
+
     suggestions = ai.suggest(word)
     completions.clear()
     for i in range(10):
@@ -115,6 +118,7 @@ def handle_input(event):
 
     if not event.char:
         return
+
     if event.keysym == '??':
         char = None
         if event.keycode == 219:
@@ -133,6 +137,7 @@ def handle_input(event):
                 capitalize = False
             text.insert(INSERT, char)
             return 'break'
+
     if event.char in '0123456789':
         digit = reverse(int(event.char))
         if digit < len(completions):
@@ -144,6 +149,7 @@ def handle_input(event):
             nums[digit].config(bg='yellow')
             completions.clear()
         return 'break'
+
     if event.char.isalpha() and capitalize:
         text.insert(INSERT, event.char.upper())
         capitalize = False
