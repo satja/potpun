@@ -73,10 +73,12 @@ help_menu.main(root, text, menubar)
 completions = []
 resetting_modified_flag = False
 autocompleted = False
+capitalize = True
 
 def on_change(event):
     global resetting_modified_flag
     global autocompleted
+    global capitalize
 
     title = root.title()
     if title[0] != '*':
@@ -93,6 +95,9 @@ def on_change(event):
         return
 
     word = text.get("insert -1c wordstart", "insert").strip()
+    if word == '.' or word == '?' or word == '!':
+        capitalize = True
+        return
     suggestions = ai.suggest(word)
     completions.clear()
     for i in range(10):
@@ -106,6 +111,8 @@ def on_change(event):
 
 def handle_input(event):
     global autocompleted
+    global capitalize
+
     if not event.char:
         return
     if event.keysym == '??':
@@ -121,8 +128,9 @@ def handle_input(event):
         if event.keycode == 220:
             char = u"\u017e"
         if char:
-            if event.state > 8:
+            if event.state > 8 or capitalize:
                 char = char.upper()
+                capitalize = False
             text.insert(INSERT, char)
             return 'break'
     if event.char in '0123456789':
@@ -135,6 +143,10 @@ def handle_input(event):
                     labels[i].config(text='')
             nums[digit].config(bg='yellow')
             completions.clear()
+        return 'break'
+    if event.char.isalpha() and capitalize:
+        text.insert(INSERT, event.char.upper())
+        capitalize = False
         return 'break'
 
 def configure(event):
