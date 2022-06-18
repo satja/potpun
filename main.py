@@ -43,7 +43,13 @@ if 'USER' not in config:
 text = ScrolledText(root, width=TEXT_WIDTH, state='normal', wrap='word', undo=True)
 text.focus_set()
 
-nums = [Label(root, font=LABEL_FONT + ' bold', text=f"{i}", width=LABEL_WIDTH)\
+def permute(i):
+    return 0 if i == 9 else i + 1
+
+def reverse(digit):
+    return 9 if digit == 0 else digit - 1
+
+nums = [Label(root, font=LABEL_FONT + ' bold', text=f"{permute(i)}", width=LABEL_WIDTH)\
         for i in range(10)]
 for i, num in enumerate(nums):
     num.grid(row=i, column=1)
@@ -120,7 +126,7 @@ def handle_input(event):
             text.insert(INSERT, char)
             return 'break'
     if event.char in '0123456789':
-        digit = int(event.char)
+        digit = reverse(int(event.char))
         if digit < len(completions):
             autocompleted = True
             text.insert(INSERT, completions[digit])
