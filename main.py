@@ -36,8 +36,12 @@ default_config = {
     'Background': 'white',
     'FontColor': 'black',
     'Language': 'croatian',
+    'AutoCapitalize': True,
+    'SpaceAfterInterpunction': True,
+    'SpaceAfterWord': False,
     }
-if 'USER' not in config:
+if 'USER' not in config or\
+        any(key not in config['USER'] for key in default_config):
     config['USER'] = default_config
 
 text = ScrolledText(root, width=TEXT_WIDTH, state='normal', wrap='word', undo=True)
@@ -64,8 +68,12 @@ ai = suggest.AutoComplete(config['USER'])
 
 menubar = Menu(root)
 file_menu.main(root, text, menubar)
-var = StringVar(None, config['USER']['Language'])
-language_menu.main(root, text, menubar, config['USER'], ai, var)
+language_var = StringVar(None, config['USER']['Language'])
+auto_capitalize = BooleanVar(value=config['USER']['AutoCapitalize'])
+auto_space_word = BooleanVar(value=config['USER']['SpaceAfterWord'])
+auto_space_interpunction = BooleanVar(value=config['USER']['SpaceAfterInterpunction'])
+language_menu.main(root, text, menubar, config['USER'], ai, language_var,
+        auto_capitalize, auto_space_word, auto_space_interpunction)
 edit_menu.main(root, text, menubar)
 format_menu.main(root, text, menubar, config['USER'], default_config)
 help_menu.main(root, text, menubar)
@@ -73,7 +81,7 @@ help_menu.main(root, text, menubar)
 completions = []
 resetting_modified_flag = False
 autocompleted = False
-capitalize = True
+capitalize = auto_capitalize.get()
 
 def on_change(event):
     global resetting_modified_flag
@@ -96,8 +104,9 @@ def on_change(event):
 
     word = text.get("insert -1c wordstart", "insert").strip()
     if word == '.' or word == '?' or word == '!' or word == ',':
-        text.insert(INSERT, ' ')
-        if word != ',':
+        if auto_space_interpunction.get():
+            text.insert(INSERT, ' ')
+        if word != ',' and auto_capitalize.get():
             capitalize = True
         return
 
@@ -143,6 +152,8 @@ def handle_input(event):
         if digit < len(completions):
             autocompleted = True
             text.insert(INSERT, completions[digit])
+            if auto_space_word.get():
+                text.insert(INSERT, ' ')
             for i in range(len(completions)):
                 if i != digit:
                     labels[i].config(text='')
