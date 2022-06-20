@@ -36,7 +36,7 @@ class Format():
         self.config['FontSize'] = str(value)
 
     def default(self):
-        self.config.update(self.default_config)
+        self.config = self.default_config
         self.text.config(bg=self.config['Background'])
         self.text.config(fg=self.config['FontColor'])
         self.font.configure(family=self.config['FontFamily'], size=self.config['FontSize'])
