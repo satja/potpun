@@ -25,7 +25,7 @@ pip install configparser
 pip install tk
 ```
 
-Then, simply run <em>main.py</em>.
+Then, simply run [main.py](./main.py).
 
 ## Adding a language
 
