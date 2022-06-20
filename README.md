@@ -2,7 +2,7 @@
 
 Nadopunitelj is a simple open-source editor, currently supporting English and Croatian word completion.
 It suggests up to 10 word completions sorted by word frequencies in a language.
-A suggestion is chosen by simply pressing the corresponding key from 0 to 9 - no mouse!
+A suggestion is selected by simply pressing the corresponding key from 0 to 9 - no mouse!
 
 <span>
 <img src="https://blogaritam.files.wordpress.com/2022/06/example_en.png" width="450">
@@ -11,7 +11,7 @@ A suggestion is chosen by simply pressing the corresponding key from 0 to 9 - no
 
 Context-based suggestions using neural networks might work better - feel free to contribute!
 
-"Nadopunitelj" is a Croatian word for "the one who completes", while "potpun" (the repository name) means "complete".
+<em>Nadopunitelj</em> is a Croatian word for "the one who completes", while <em>potpun</em> (the repository name) means "complete".
 
 ## Setup
 
@@ -25,7 +25,12 @@ pip install configparser
 pip install tk
 ```
 
-Then, simply run main.py.
+Then, simply run <em>main.py</em>.
+
+## Adding a language
+
+Create the list of words sorted by frequencies (for example see [croatian.txt](./dictionaries/croatian.txt))
+and convert it to a binary file using [txt2dat.py](./dictionaries/txt2dat.py). Then edit [language_menu.py](./language_menu.py).
 
 ## Building Windows installer
 
@@ -37,7 +42,7 @@ Install PyInstaller:
 pip install pyinstaller
 ```
 
-To build potpun_installer.exe, run the following commands on Windows:
+To build <em>potpun_installer.exe</em>, run the following commands on Windows:
 
 ```bash
 pyinstaller potpun.spec
