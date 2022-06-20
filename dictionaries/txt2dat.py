@@ -1,3 +1,7 @@
+""" Converts a .txt file (i.e. croatian.txt, english.txt), with words sorted by
+    frequencies, into a binary file (i.e. croatian.dat, english.dat).
+"""
+
 import pickle
 import sys
 

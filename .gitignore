@@ -1,1 +1,4 @@
 *.swp
+__pycache__/*
+hrLex_v1.3
+potpun.ini
