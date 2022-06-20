@@ -15,23 +15,23 @@ class Format():
         self.font = Font(family=config['FontFamily'], size=config['FontSize'])
         text.configure(font=self.font, bg=config['Background'], fg=config['FontColor'])
 
-    def changeBg(self):
+    def change_bg(self):
         (triple, hexstr) = askcolor()
         if hexstr:
             self.text.config(bg=hexstr)
             self.config['Background'] = hexstr
 
-    def changeFg(self):
+    def change_fg(self):
         (triple, hexstr) = askcolor()
         if hexstr:
             self.text.config(fg=hexstr)
             self.config['FontColor'] = hexstr
 
-    def changeFont(self, option):
+    def change_font(self, option):
         self.font.configure(family=option)
         self.config['FontFamily'] = option
 
-    def changeSize(self, value):
+    def change_size(self, value):
         self.font.configure(size=value)
         self.config['FontSize'] = str(value)
 
@@ -43,28 +43,28 @@ class Format():
 
 
 def main(root, text, menubar, config, default_config):
-    objFormat = Format(text, config, default_config)
+    obj_format = Format(text, config, default_config)
     fontoptions = families(root)
 
-    formatMenu = Menu(menubar)
+    format_menu = Menu(menubar)
 
-    fsubmenu = Menu(formatMenu, tearoff=0)
-    ssubmenu = Menu(formatMenu, tearoff=0)
+    fsubmenu = Menu(format_menu, tearoff=0)
+    ssubmenu = Menu(format_menu, tearoff=0)
 
     for option in fontoptions:
         fsubmenu.add_command(label=option, command=lambda option=option:
-            objFormat.changeFont(option))
+            obj_format.change_font(option))
     for value in range(1, 31):
         ssubmenu.add_command(label=str(value), command=lambda value=value:
-            objFormat.changeSize(value))
+            obj_format.change_size(value))
 
-    formatMenu.add_command(label="Change Background", command=objFormat.changeBg)
-    formatMenu.add_command(label="Change Font Color", command=objFormat.changeFg)
-    formatMenu.add_cascade(label="Font", menu=fsubmenu)
-    formatMenu.add_cascade(label="Size", menu=ssubmenu)
-    formatMenu.add_separator()
-    formatMenu.add_command(label="Reset Default", command=objFormat.default)
-    menubar.add_cascade(label="Format", menu=formatMenu)
+    format_menu.add_command(label="Change Background", command=obj_format.change_bg)
+    format_menu.add_command(label="Change Font Color", command=obj_format.change_fg)
+    format_menu.add_cascade(label="Font", menu=fsubmenu)
+    format_menu.add_cascade(label="Size", menu=ssubmenu)
+    format_menu.add_separator()
+    format_menu.add_command(label="Reset Default", command=obj_format.default)
+    menubar.add_cascade(label="Format", menu=format_menu)
 
     root.grid_columnconfigure(0, weight=1)
     root.resizable(True, True)

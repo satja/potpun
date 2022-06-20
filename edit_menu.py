@@ -24,13 +24,13 @@ class Edit():
     def paste(self, *args):
         self.text.insert(INSERT, self.root.clipboard_get())
 
-    def selectAll(self, *args):
+    def select_all(self, *args):
         self.text.tag_add(SEL, "1.0", END)
         self.text.mark_set(0.0, END)
         self.text.see(INSERT)
 
-    def copyAll(self, *args):
-        self.selectAll()
+    def copy_all(self, *args):
+        self.select_all()
         self.copy()
 
     def undo(self, *args):
@@ -61,33 +61,33 @@ class Edit():
 
 def main(root, text, menubar):
 
-    objEdit = Edit(text, root)
+    obj_edit = Edit(text, root)
 
     editmenu = Menu(menubar)
-    editmenu.add_command(label="Copy", command=objEdit.copy, accelerator="Ctrl+C")
-    editmenu.add_command(label="Cut", command=objEdit.cut, accelerator="Ctrl+X")
-    editmenu.add_command(label="Paste", command=objEdit.paste, accelerator="Ctrl+V")
-    editmenu.add_command(label="Undo", command=objEdit.undo, accelerator="Ctrl+Z")
-    editmenu.add_command(label="Redo", command=objEdit.redo, accelerator="Ctrl+Y")
-    editmenu.add_command(label="Find", command=objEdit.find, accelerator="Ctrl+F")
+    editmenu.add_command(label="Copy", command=obj_edit.copy, accelerator="Ctrl+C")
+    editmenu.add_command(label="Cut", command=obj_edit.cut, accelerator="Ctrl+X")
+    editmenu.add_command(label="Paste", command=obj_edit.paste, accelerator="Ctrl+V")
+    editmenu.add_command(label="Undo", command=obj_edit.undo, accelerator="Ctrl+Z")
+    editmenu.add_command(label="Redo", command=obj_edit.redo, accelerator="Ctrl+Y")
+    editmenu.add_command(label="Find", command=obj_edit.find, accelerator="Ctrl+F")
     editmenu.add_separator()
-    editmenu.add_command(label="Select All", command=objEdit.selectAll, accelerator="Ctrl+A")
-    editmenu.add_command(label="Copy All", command=objEdit.copyAll)
+    editmenu.add_command(label="Select All", command=obj_edit.select_all, accelerator="Ctrl+A")
+    editmenu.add_command(label="Copy All", command=obj_edit.copy_all)
     menubar.add_cascade(label="Edit", menu=editmenu)
 
-    root.bind_all("<Control-z>", objEdit.undo)
-    root.bind_all("<Control-y>", objEdit.redo)
-    root.bind_all("<Control-f>", objEdit.find)
-    root.bind_all("<Control-a>", objEdit.selectAll)
+    root.bind_all("<Control-z>", obj_edit.undo)
+    root.bind_all("<Control-y>", obj_edit.redo)
+    root.bind_all("<Control-f>", obj_edit.find)
+    root.bind_all("<Control-a>", obj_edit.select_all)
 
-    objEdit.rightClick.add_command(label="Copy", command=objEdit.copy)
-    objEdit.rightClick.add_command(label="Cut", command=objEdit.cut)
-    objEdit.rightClick.add_command(label="Paste", command=objEdit.paste)
-    objEdit.rightClick.add_separator()
-    objEdit.rightClick.add_command(label="Select All", command=objEdit.selectAll)
-    objEdit.rightClick.bind("<Control-q>", objEdit.selectAll)
+    obj_edit.rightClick.add_command(label="Copy", command=obj_edit.copy)
+    obj_edit.rightClick.add_command(label="Cut", command=obj_edit.cut)
+    obj_edit.rightClick.add_command(label="Paste", command=obj_edit.paste)
+    obj_edit.rightClick.add_separator()
+    obj_edit.rightClick.add_command(label="Select All", command=obj_edit.select_all)
+    obj_edit.rightClick.bind("<Control-q>", obj_edit.select_all)
 
-    text.bind("<Button-3>", objEdit.popup)
+    text.bind("<Button-3>", obj_edit.popup)
 
     root.config(menu=menubar)
 

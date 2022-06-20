@@ -2,12 +2,15 @@ from collections import defaultdict
 import tkinter as tk
 import pickle
 
+import settings
+
+
 class AutoComplete:
     def __init__(self, config):
         self.language = config['Language']
 
     def _load(self):
-        words_file = f'dictionaries/{self.language}.dat'
+        words_file = f'{settings.DICT_FOLDER}/{self.language}.dat'
         self.suggestions = defaultdict(list)
         self.words = []
         word_set = set()
@@ -24,7 +27,7 @@ class AutoComplete:
                 self.words.append(word)
                 for i in range(1, n):
                     prefix = word[:i]
-                    if len(self.suggestions[prefix]) < 10:
+                    if len(self.suggestions[prefix]) < settings.NUM_SUGGESTIONS:
                         self.suggestions[prefix].append(word_index)
         self.loading.destroy()
 
@@ -38,5 +41,5 @@ class AutoComplete:
         label.pack()
         self.loading.after(200, self._load)
 
-    def suggest(self, word):
-        return [self.words[index] for index in self.suggestions[word.lower()]]
+    def suggest(self, prefix):
+        return [self.words[index] for index in self.suggestions[prefix.lower()]]

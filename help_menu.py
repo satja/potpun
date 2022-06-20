@@ -9,12 +9,10 @@ class Help():
 
 
 def main(root, text, menubar):
-
     help = Help()
-
-    helpMenu = Menu(menubar)
-    helpMenu.add_command(label="About", command=help.about)
-    menubar.add_cascade(label="Help", menu=helpMenu)
+    help_menu = Menu(menubar)
+    help_menu.add_command(label="About", command=help.about)
+    menubar.add_cascade(label="Help", menu=help_menu)
 
     root.config(menu=menubar)
 
