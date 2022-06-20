@@ -27,7 +27,7 @@ class File():
             self.root.title(f"{settings.TITLE} - {os.path.basename(self.filename)}")
         except Exception as e:
             traceback.print_exc()
-            showerror(title="Oops!", message="Unable to save file...\n\n" + e)
+            showerror(title="Oops!", message="Unable to save file...\n\n" + str(e))
 
     def save_as(self):
         f = asksaveasfile(mode='w', defaultextension='.txt')
@@ -48,7 +48,7 @@ class File():
             self.text.insert(0.0, t)
         except Exception as e:    
             traceback.print_exc()
-            showerror(title="Oops!", message="Unable to open file...\n\n" + e)
+            showerror(title="Oops!", message="Unable to open file...\n\n" + str(e))
 
     def quit(self):
         entry = askyesno(title="Quit", message="Are you sure you want to quit?")
