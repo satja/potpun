@@ -25,12 +25,6 @@ def load_config():
     return config
 
 
-""" Adjusts the window in case of font/size change.
-"""
-def configure(event):
-    root.geometry("{}x{}".format(root.winfo_width(), event.height))
-
-
 """ Happens when the text has changed (e.g. by entering a character).
 """
 def on_change(event):
@@ -69,14 +63,34 @@ def on_change(event):
     # Fill suggestions for word completion.
     suggestions = ai.suggest(word)
     completions.clear()
+    max_width = 0
+    num_suggestions = min(settings.NUM_SUGGESTIONS, len(suggestions))
+    for i in range(num_suggestions):
+        completion = suggestions[i][len(word):]
+        completions.append(completion)
+        labels[i].config(text=f'{word}{completion}')
+        max_width = max(labels[i].winfo_width(), max_width)
+
+    # Where to show suggestions?
+    x, y, width, height = text.bbox(INSERT)
+    max_width += settings.SUGGESTION_DISTANCE + height
+    orig_x = x
+    if x + max_width > root.winfo_width():
+        x = root.winfo_width() - max_width
+        y += height
+    if y + num_suggestions * height > root.winfo_height():
+        y = root.winfo_height() - num_suggestions * height
+        if x < orig_x < x + max_width:
+            x = orig_x - max_width
+
     for i in range(settings.NUM_SUGGESTIONS):
-        nums[i].config(bg=settings.SUGGESTION_KEY_BACKGROUND)
         if i < len(suggestions):
-            completion = suggestions[i][len(word):]
-            labels[i].config(text=f'{word}{completion}')
-            completions.append(completion)
+            nums[i].config(bg=settings.SUGGESTION_BACKGROUND, width=2)
+            nums[i].place(x=x + settings.SUGGESTION_DISTANCE, y=y + i * height)
+            labels[i].place(x=x + settings.SUGGESTION_DISTANCE + height, y=y + i * height)
         else:
-            labels[i].config(text='')
+            nums[i].place_forget()
+            labels[i].place_forget()
 
 
 """ Happens when any character is entered.
@@ -117,9 +131,8 @@ def handle_input(event):
             if auto_space_word.get():
                 text.insert(INSERT, ' ')
             for i in range(len(completions)):
-                if i != index:
-                    labels[i].config(text='')
-            nums[index].config(bg=settings.SUGGESTION_SELECTED_BACKGROUND)
+                nums[i].place_forget()
+                labels[i].place_forget()
             completions.clear()
         return 'break'
 
@@ -145,27 +158,18 @@ if __name__ == "__main__":
     root.tk.call('encoding', 'system', 'utf-8')
     root.option_add("*font", settings.ROOT_FONT)
     root.title(settings.TITLE + ' - Untitled')
-    root.geometry("{}x{}".format(settings.DEFAULT_WIDTH, root.winfo_height()))
+    root.geometry("{}x{}".format(settings.DEFAULT_WIDTH, settings.DEFAULT_HEIGHT))
     root.minsize(width=settings.MIN_WIDTH, height=settings.MIN_HEIGHT)
 
-    text = ScrolledText(root, width=settings.TEXT_WIDTH,
-            state='normal', wrap='word', undo=True)
+    text = ScrolledText(root, state='normal', wrap='word', undo=True)
     text.focus_set()
-    text.grid(row=0, column=0, rowspan=settings.NUM_SUGGESTIONS)
-    text.bind("<Configure>", configure)
+    text.pack(fill='both', expand=True)
     text.bind("<Key>", handle_input)
     text.bind("<<Modified>>", on_change)
 
-    nums = [Label(root, font=settings.LABEL_FONT + ' bold',
-            text=f"{settings.INDEX_TO_KEY[i]}", width=settings.LABEL_WIDTH)
+    nums = [Label(root, text=f"{settings.INDEX_TO_KEY[i]}")
             for i in range(settings.NUM_SUGGESTIONS)]
-    for i, num in enumerate(nums):
-        num.grid(row=i, column=1)
-
-    labels = [Label(root, text="", font=settings.LABEL_FONT,
-            width=settings.SUGGESTION_WIDTH) for i in range(settings.NUM_SUGGESTIONS)]
-    for i, l in enumerate(labels):
-        l.grid(row=i, column=2)
+    labels = [Label(root, text="") for i in range(settings.NUM_SUGGESTIONS)]
 
     ai = suggest.AutoComplete(config['USER'])
     language_var = StringVar(None, config['USER']['Language'])
@@ -178,7 +182,7 @@ if __name__ == "__main__":
     language_menu.main(root, text, menubar, config['USER'], ai, language_var,
             auto_capitalize, auto_space_word, auto_space_interpunction)
     edit_menu.main(root, text, menubar)
-    format_menu.main(root, text, menubar, config['USER'], settings.DEFAULT_CONFIG)
+    format_menu.main(root, text, nums, labels, menubar, config['USER'], settings.DEFAULT_CONFIG)
     help_menu.main(root, text, menubar)
 
     root.after(200, ai.load)

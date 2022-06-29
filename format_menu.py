@@ -8,12 +8,16 @@ import sys
 
 
 class Format():
-    def __init__(self, text, config, default_config):
+    def __init__(self, text, nums, labels, config, default_config):
         self.text = text
         self.config = config
         self.default_config = default_config
         self.font = Font(family=config['FontFamily'], size=config['FontSize'])
         text.configure(font=self.font, bg=config['Background'], fg=config['FontColor'])
+        for num in nums:
+            num.configure(font=self.font)
+        for l in labels:
+            l.configure(font=self.font)
 
     def change_bg(self):
         (triple, hexstr) = askcolor()
@@ -40,10 +44,14 @@ class Format():
         self.text.config(bg=self.config['Background'])
         self.text.config(fg=self.config['FontColor'])
         self.font.configure(family=self.config['FontFamily'], size=self.config['FontSize'])
+        for num in nums:
+            num.configure(family=self.config['FontFamily'], size=self.config['FontSize'])
+        for l in labels:
+            l.configure(family=self.config['FontFamily'], size=self.config['FontSize'])
 
 
-def main(root, text, menubar, config, default_config):
-    obj_format = Format(text, config, default_config)
+def main(root, text, nums, labels, menubar, config, default_config):
+    obj_format = Format(text, nums, labels, config, default_config)
     fontoptions = families(root)
 
     format_menu = Menu(menubar)
