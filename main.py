@@ -49,6 +49,8 @@ def on_change(event):
 
     # Get last (partially entered) word.
     word = text.get("insert -1c wordstart", "insert").strip()
+    prev_word = text.get("insert -1c wordstart -2c wordstart",
+            "insert -1c wordstart -1c").strip()
 
     # Is this interpunction?
     if any(word == c for c in '.!?:,;'):
@@ -61,7 +63,7 @@ def on_change(event):
         return
 
     # Fill suggestions for word completion.
-    suggestions = ai.suggest(word)
+    suggestions = ai.suggest(word, prev_word)
     completions.clear()
     max_width = 0
     num_suggestions = min(settings.NUM_SUGGESTIONS, len(suggestions))
