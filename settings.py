@@ -21,7 +21,7 @@ DEFAULT_CONFIG = {
     'Language': DEFAULT_LANGUAGE,
     'AutoCapitalize': True,
     'SpaceAfterInterpunction': True,
-    'SpaceAfterWord': False,
+    'SpaceAfterWord': True,
 }
 
 NUM_SUGGESTIONS = 10

@@ -29,6 +29,8 @@ def load_config():
 """
 def on_change(event):
     global resetting_modified_flag
+    global space_after_interpuction_inserted
+    global space_after_word_inserted
     global word_completed
     global capitalize
 
@@ -47,20 +49,28 @@ def on_change(event):
         word_completed = False
         return
 
-    # Get last (partially entered) word.
+    # Get previous and last (partially entered) word.
     word = text.get("insert -1c wordstart", "insert").strip()
     prev_word = text.get("insert -1c wordstart -2c wordstart",
             "insert -1c wordstart -1c").strip()
 
     # Is this interpunction?
     if any(word == c for c in '.!?:,;'):
-        if auto_space_interpunction.get():
+        if auto_space_word.get() and space_after_word_inserted:
+            text.delete("insert -2c", "insert -1c")
+            space_after_word_inserted = False
+        elif auto_space_interpunction.get() and not space_after_interpuction_inserted:
             text.insert(INSERT, ' ')
+            space_after_interpuction_inserted = True
         if word == '.' or word == '?' or word == '!':
             if auto_capitalize.get():
                 capitalize = True
         completions.clear()
         return
+
+    if word:
+        space_after_word_inserted = False
+        space_after_interpuction_inserted = False
 
     # Fill suggestions for word completion.
     suggestions = ai.suggest(word, prev_word)
@@ -99,6 +109,7 @@ def on_change(event):
 """
 def handle_input(event):
     global word_completed
+    global space_after_word_inserted
     global capitalize
 
     if not event.char:
@@ -132,6 +143,7 @@ def handle_input(event):
             text.insert(INSERT, completions[index])
             if auto_space_word.get():
                 text.insert(INSERT, ' ')
+                space_after_word_inserted = True
             for i in range(len(completions)):
                 nums[i].place_forget()
                 labels[i].place_forget()
@@ -193,6 +205,7 @@ if __name__ == "__main__":
     completions = []
     resetting_modified_flag = False
     word_completed = False
+    space_after_interpuction_inserted = False
     capitalize = auto_capitalize.get()
 
     root.mainloop()
