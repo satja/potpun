@@ -38,7 +38,8 @@ class AutoComplete:
         )
         pb.pack()
         pb.start()
-        Thread(target=self._load, args=()).start()
+        t = Thread(target=self._load, args=())
+        self.loading.after(200, t.start)
 
     def suggest(self, prefix, prev_word=None):
         if not prefix:
