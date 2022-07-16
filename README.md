@@ -27,8 +27,8 @@ Then, simply run [main.py](./main.py).
 
 ## Adding a language
 
-Create the list of words sorted by frequencies (for example see [croatian.txt](./dictionaries/croatian.txt))
-and convert it to a binary file using [txt2dat.py](./dictionaries/txt2dat.py). Then edit [language_menu.py](./language_menu.py).
+Create the list of words and the list of word pairs sorted by frequencies (for example see [croatian.txt](./lang_data/croatian.txt) and [croatian_bigrams.txt](./lang_data/croatian_bigrams.txt))
+and convert it to a binary file using [txt2dat.py](./lang_data/txt2dat.py). Then edit [language_menu.py](./language_menu.py).
 
 ## Building Windows installer
 
