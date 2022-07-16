@@ -6,7 +6,7 @@
 Name "${APP_NAME}"
 
 # define the name of the installer
-Outfile "potpun_installer.exe"
+Outfile "nadopunitelj_installer.exe"
  
 # define the directory to install to, the desktop in this case as specified  
 # by the predefined $DESKTOP variable
@@ -52,7 +52,7 @@ Section
 	Quit:
 	  Quit
     UninstallExisting:
-        StrCpy $1 "potpun.exe"
+        StrCpy $1 "nadopunitelj.exe"
 
         DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
         DeleteRegKey HKLM SOFTWARE\${APP_NAME}
@@ -69,8 +69,8 @@ Section
     AccessControl::GrantOnFile "$INSTDIR\run" "(BU)" "FullAccess"
 
     SetOutPath "$INSTDIR\run"
-    CreateShortcut "$SMPROGRAMS\${APP_NAME}.lnk" "$INSTDIR\run\potpun.exe" "" "$INSTDIR\run\logo.ico"
-    CreateShortcut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\run\potpun.exe" "" "$INSTDIR\run\logo.ico"
+    CreateShortcut "$SMPROGRAMS\${APP_NAME}.lnk" "$INSTDIR\run\nadopunitelj.exe" "" "$INSTDIR\run\logo.ico"
+    CreateShortcut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\run\nadopunitelj.exe" "" "$INSTDIR\run\logo.ico"
 
     WriteUninstaller "$INSTDIR\uninstall.exe"
     CreateShortCut "$SMPROGRAMS\Uninstall ${APP_NAME}.lnk" "$INSTDIR\uninstall.exe"
@@ -92,7 +92,7 @@ functionEnd
 !include "LogicLib.nsh"
 Section Uninstall
 
-    StrCpy $1 "potpun.exe"
+    StrCpy $1 "nadopunitelj.exe"
 
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_NAME}"
     DeleteRegKey HKLM SOFTWARE\${APP_NAME}
