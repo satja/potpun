@@ -1,15 +1,13 @@
 # Nadopunitelj - an autocomplete editor
 
 Nadopunitelj is a simple open-source editor, currently supporting English and Croatian word completion.
-It suggests up to 10 word completions sorted by word frequencies in a language.
+It suggests up to 10 word completions using word frequencies and word-pair frequencies in a language.
 A suggestion is selected by simply pressing the corresponding key from 0 to 9 - no mouse!
 
 <span>
-<img src="https://blogaritam.files.wordpress.com/2022/06/example_en.png" width="450">
-<img src="https://blogaritam.files.wordpress.com/2022/06/hr_example.png" width="450">
+<img src="https://blogaritam.files.wordpress.com/2022/07/en_example.png" width="350">
+<img src="https://blogaritam.files.wordpress.com/2022/07/hr_example.png" width="350">
 </span>
-
-Context-based suggestions using neural networks might work better - feel free to contribute!
 
 <em>Nadopunitelj</em> is a Croatian word for "the one who completes", while <em>potpun</em> (the repository name) means "complete".
 
