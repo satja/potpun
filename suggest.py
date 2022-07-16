@@ -13,12 +13,10 @@ class AutoComplete:
         self.language = config['Language']
 
     def _load(self):
-        words_file = f'{settings.DICT_FOLDER}/{self.language}.dat'
-        bigrams_file = f'{settings.DICT_FOLDER}/{self.language}_bigrams.dat'
-        with open(words_file, 'rb') as f:
+        filename = f'{settings.DICT_FOLDER}/{self.language}.dat'
+        with open(filename, 'rb') as f:
             self.words = pickle.load(f)
             self.suggestions = pickle.load(f)
-        with open(bigrams_file, 'rb') as f:
             self.next_word = pickle.load(f)
         self.loading.destroy()
 
@@ -47,7 +45,7 @@ class AutoComplete:
         prev_word = prev_word.lower()
         prefix = prefix.lower()
         suggestions = []
-        for index in self.next_word.get((prev_word, prefix[0]), []):
+        for index in self.next_word.get(prev_word + prefix[0], []):
             word = self.words[index]
             if word.startswith(prefix):
                 suggestions.append(word)
