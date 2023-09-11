@@ -1,4 +1,4 @@
-import pickle
+import json
 import sys
 from collections import defaultdict
 
@@ -36,7 +36,9 @@ with open(f'{language}_bigrams.txt') as f:
         if len(b) > 2 and a in word_set and b in word_set:
             next_word[a + b[0]].append(word_to_index[b])
 
-with open(f'../dictionaries/{language}.dat', 'wb') as f:
-    pickle.dump(word_list, f)
-    pickle.dump(suggestions, f)
-    pickle.dump(next_word, f)
+with open('word_list.json', 'w') as f:
+    f.write(json.dumps(word_list))
+with open('suggestions.json', 'w') as f:
+    f.write(json.dumps(suggestions))
+with open('next_word.json', 'w') as f:
+    f.write(json.dumps(next_word))
