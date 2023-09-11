@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autocomplete Editor</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .editor-container {
+            width: fit-content;
+        }
+        #mirror {
+            position: absolute;
+            visibility: hidden;
+            overflow: hidden;
+        }
+        #editor, #mirror {
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            line-height: 1.5;
+            /* ... any other styles ... */
+        }
+        .editor-container {
+            width: fit-content; /* This will make the container only as wide as its content */
+        }
+        #suggestions {
+            display: none;
+            border: 1px solid #ccc;
+            position: absolute;
+        }
+        #suggestions div {
+            padding: 5px;
+            cursor: pointer;
+            background-color: white;
+        }
+        #suggestions div:hover {
+            background-color: #eee;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        textarea {
+            width: 70vw;
+            height: 70vh;
+            align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="suggestions"></div>
+<div class="editor-container">
+    <textarea id="editor"></textarea>
+    <div class="controls">
+        <div class="radio-group">
+            <label>Language:</label>
+            <input type="radio" id="croatian" name="language" value="croatian" checked>
+            <label for="croatian">Croatian</label>
+            <input type="radio" id="english" name="language" value="english">
+            <label for="english">English</label>
+        </div>
+        <button id="copyButton">Copy to Clipboard</button>
+    </div>
+    <div>
+        <input type="checkbox" id="autoCapitalize" checked>
+        <label for="autoCapitalize">Auto capitalize beginning of sentence</label>
+    </div>
+    <div>
+        <input type="checkbox" id="autoSpaceInterpunction" checked>
+        <label for="autoSpaceInterpunction">Auto space after interpunction</label>
+    </div>
+    <div>
+        <input type="checkbox" id="autoSpaceCompletion" checked>
+        <label for="autoSpaceCompletion">Auto space after completion is selected</label>
+    </div>
+</div>
+</body>
+<script src="./potpun_files/script.js"></script>
+</html>
+
