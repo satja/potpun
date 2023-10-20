@@ -84,12 +84,14 @@ let autoSpaceCompletion = true;
 
 function loadDict() {
     console.log('Fetching dictionary for', currentLanguage);
+    document.getElementById('loading').style.display = 'block';
     fetch('./potpun_files/' + currentLanguage + '.json')
         .then(response => response.json())
         .then(data => {
             words = data.words;
             suggestions = data.suggestions;
             next_word = data.next_word;
+            document.getElementById('loading').style.display = 'none';
         });
 };
 
