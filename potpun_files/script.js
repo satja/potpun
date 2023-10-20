@@ -118,11 +118,6 @@ autoSpaceCompletionCheckbox.addEventListener('change', function() {
     // Implement logic for auto spacing after completion if needed
 });
 
-
-function getCompletions(input) {
-    return suggest(getCurrentWord(editor), getPreviousWord(editor));
-}
-
 const mirror = document.createElement('div');
 mirror.id = 'mirror';
 const styles = window.getComputedStyle(editor);
@@ -134,19 +129,48 @@ mirror.style['visibility'] = 'hidden';
 mirror.style['overflow'] = 'hidden';
 document.body.appendChild(mirror);
 
+let completions = [];
+let capitalize = true;
+let space_after_interpunction_inserted = false;
+let space_after_selection_inserted = false;
+
 editor.addEventListener('keyup', function(event) {
     const currentWord = getCurrentWord(editor);
-    const previousWord = getPreviousWord(editor);
-    //const completions = suggest(currentWord, previousWord);
-    const completions = getCompletions(editor.value);
+    if (space_after_selection_inserted && currentWord == '') return;
 
     // Clear previous suggestions
     popup.innerHTML = '';
 
+    if (currentWord.match(/[.!?:,;]$/)) {
+        if (space_after_selection_inserted) {
+            editor.value = editor.value.slice(0, -2) + currentWord + ' ';
+            space_after_selection_inserted = false;
+        }
+        else if (autoSpaceInterpunction) {
+            editor.value += ' ';
+            editor.selectionStart += 1;
+            editor.selectionEnd += 1;
+            space_after_interpunction_inserted = true;
+        }
+        if (/^[.!?]$/.test(currentWord) && autoCapitalize) {
+            capitalize = true;
+        }
+        return;
+    }
+
+    space_after_selection_inserted = false;
+    space_after_interpunction_inserted = false;
+
+    const previousWord = getPreviousWord(editor);
+    const suggestions = suggest(currentWord, previousWord);
+
     // Populate suggestions
-    completions.forEach((word, index) => {
+    completions = [];
+    suggestions.forEach((word, index) => {
         const div = document.createElement('div');
-        div.textContent = `${index}: ${word}`;
+        let completion = currentWord + word.slice(currentWord.length);
+        completions.push(completion)
+        div.textContent = `${index}: ${completion}`;
         popup.appendChild(div);
     });
 
@@ -163,19 +187,19 @@ editor.addEventListener('keyup', function(event) {
     popup.style.left = rect.left + 5 + 'px';
     popup.style.top = rect.top - 50 + 'px';
     popup.style.display = 'block';
-
-    console.log(rect);
-    console.log(popup.style);
 });
 
 editor.addEventListener('keydown', function(event) {
-    // Check if key is a number between 0-9
-    if (event.keyCode >= 48 && event.keyCode <= 57) {
+    // Check if this is a suggestion selection 0-9
+    if (!space_after_selection_inserted && popup.innerHTML && event.keyCode >= 48 && event.keyCode <= 57) {
         event.preventDefault();  // Prevent the default behavior
 
         const index = event.keyCode - 48;
-        let selectedWord = getCompletions(editor.value)[index];
-        if (autoSpaceCompletion) selectedWord += ' ';
+        let selectedWord = completions[index];
+        if (autoSpaceCompletion) {
+            selectedWord += ' ';
+            space_after_selection_inserted = true;
+        }
 
         if (selectedWord) {
             const currentWord = getCurrentWord(editor);
@@ -190,6 +214,11 @@ editor.addEventListener('keydown', function(event) {
             // Hide suggestions after selecting a word
             popup.style.display = 'none';
         }
+    }
+    if (capitalize && event.key.length === 1 && /[a-zA-Z]/.test(event.key)) {
+        event.preventDefault();
+        editor.value += event.key.toUpperCase();
+        capitalize = false;
     }
 });
 
