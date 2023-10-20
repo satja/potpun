@@ -70,12 +70,39 @@ function suggest(prefix, prevWord = null) {
     return suggestionsList;
 }
 
+const INDEX_TO_KEY = {
+    0: 1,
+    1: 2,
+    2: 3,
+    3: 4,
+    4: 5,
+    5: 6,
+    6: 7,
+    7: 8,
+    8: 9,
+    9: 0
+}
+
+const KEY_TO_INDEX = {
+    1: 0,
+    2: 1,
+    3: 2,
+    4: 3,
+    5: 4,
+    6: 5,
+    7: 6,
+    8: 7,
+    9: 8,
+    0: 9
+}
+
 const editor = document.getElementById('editor');
 const popup = document.getElementById('suggestions');
 const languageRadios = document.getElementsByName('language');
 const autoCapitalizeCheckbox = document.getElementById('autoCapitalize');
 const autoSpaceInterpunctionCheckbox = document.getElementById('autoSpaceInterpunction');
 const autoSpaceCompletionCheckbox = document.getElementById('autoSpaceCompletion');
+const editorLabel = document.getElementById('editorLabel');
 
 let currentLanguage = 'croatian';
 let autoCapitalize = true;
@@ -137,6 +164,8 @@ let space_after_interpunction_inserted = false;
 let space_after_selection_inserted = false;
 
 editor.addEventListener('keyup', function(event) {
+    console.log('aaaa');
+    editorLabel.textContent = 'Continue typing...';
     const currentWord = getCurrentWord(editor);
     if (space_after_selection_inserted && currentWord == '') return;
 
@@ -172,9 +201,11 @@ editor.addEventListener('keyup', function(event) {
         const div = document.createElement('div');
         let completion = currentWord + word.slice(currentWord.length);
         completions.push(completion)
-        div.textContent = `${index}: ${completion}`;
+        div.textContent = `${INDEX_TO_KEY[index]}: ${completion}`;
         popup.appendChild(div);
     });
+    if (completions.length > 0)
+        editorLabel.textContent = 'Press key 0-9 to select word completion';
 
     // Mirror the textarea content and insert a marker at the cursor position
     const textBeforeCursor = editor.value.substring(0, editor.selectionStart);
@@ -196,7 +227,7 @@ editor.addEventListener('keydown', function(event) {
     if (!space_after_selection_inserted && popup.innerHTML && event.keyCode >= 48 && event.keyCode <= 57) {
         event.preventDefault();  // Prevent the default behavior
 
-        const index = event.keyCode - 48;
+        const index = KEY_TO_INDEX[event.keyCode - 48];
         let selectedWord = completions[index];
         if (autoSpaceCompletion) {
             selectedWord += ' ';

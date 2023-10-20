@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autocomplete Editor</title>
+    <title>Nadopunitelj - Autocomplete Editor</title>
     <style>
         body {
             display: flex;
@@ -14,6 +14,9 @@
         }
         .editor-container {
             width: fit-content;
+        }
+        #editorLabel {
+            font-size: 14px;
         }
         #mirror {
             position: absolute;
@@ -75,6 +78,7 @@
 <body>
 <div id="suggestions"></div>
 <div class="editor-container">
+    <div><label id="editorLabel">Start typing...</label></div>
     <textarea id="editor"></textarea>
     <div class="controls">
         <div class="radio-group">
