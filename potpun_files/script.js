@@ -164,7 +164,7 @@ let space_after_interpunction_inserted = false;
 let space_after_selection_inserted = false;
 
 editor.addEventListener('keyup', function(event) {
-    console.log('aaaa');
+    if (event.keyCode == 8 || event.keyCode == 46) return;
     editorLabel.textContent = 'Continue typing...';
     const currentWord = getCurrentWord(editor);
     if (space_after_selection_inserted && currentWord == '') return;
@@ -202,6 +202,19 @@ editor.addEventListener('keyup', function(event) {
         let completion = currentWord + word.slice(currentWord.length);
         completions.push(completion)
         div.textContent = `${INDEX_TO_KEY[index]}: ${completion}`;
+        div.addEventListener('click', function() {
+            editor.value += word.slice(currentWord.length);
+            editor.selectionStart += word.length - currentWord.length;
+            editor.selectionEnd += word.length - currentWord.length;
+            if (autoSpaceCompletion) {
+                editor.value += ' ';
+                space_after_selection_inserted = true;
+                editor.selectionStart += 1;
+                editor.selectionEnd += 1;
+            }
+            popup.style.display = 'none';
+            editor.focus();
+        });
         popup.appendChild(div);
     });
     if (completions.length > 0)
@@ -223,6 +236,7 @@ editor.addEventListener('keyup', function(event) {
 });
 
 editor.addEventListener('keydown', function(event) {
+    if (event.keyCode == 8 || event.keyCode == 46) return;
     // Check if this is a suggestion selection 0-9
     if (!space_after_selection_inserted && popup.innerHTML && event.keyCode >= 48 && event.keyCode <= 57) {
         event.preventDefault();  // Prevent the default behavior
