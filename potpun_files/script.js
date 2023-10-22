@@ -218,7 +218,7 @@ editor.addEventListener('keyup', function(event) {
         popup.appendChild(div);
     });
     if (completions.length > 0)
-        editorLabel.textContent = 'Press key 0-9 to select word completion';
+        editorLabel.textContent = 'Press key 0-9 on your keyboard to select word completion';
 
     // Mirror the textarea content and insert a marker at the cursor position
     const textBeforeCursor = editor.value.substring(0, editor.selectionStart);
