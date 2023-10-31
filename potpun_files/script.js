@@ -158,6 +158,13 @@ mirror.style['visibility'] = 'hidden';
 mirror.style['overflow'] = 'hidden';
 document.body.appendChild(mirror);
 
+window.addEventListener('beforeunload', function (e) {
+    if (editor.value) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
 let completions = [];
 let capitalize = true;
 let space_after_interpunction_inserted = false;
