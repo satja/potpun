@@ -104,10 +104,10 @@ const autoSpaceInterpunctionCheckbox = document.getElementById('autoSpaceInterpu
 const autoSpaceCompletionCheckbox = document.getElementById('autoSpaceCompletion');
 const editorLabel = document.getElementById('editorLabel');
 
-let currentLanguage = 'croatian';
 let autoCapitalize = true;
 let autoSpaceInterpunction = true;
 let autoSpaceCompletion = true;
+let currentLanguage = 'croatian';
 
 function loadDict() {
     console.log('Fetching dictionary for', currentLanguage);
@@ -122,7 +122,15 @@ function loadDict() {
         });
 };
 
-loadDict();
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hostname.includes('autocomplete')) {
+        currentLanguage = 'english';
+        for (const radio of languageRadios)
+            if (radio.value === 'english')
+                radio.checked = true;
+    }
+    loadDict();
+});
 
 // Event listeners to update the settings
 Array.from(languageRadios).forEach(radio => {
